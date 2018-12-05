@@ -1,0 +1,98 @@
+<!doctype html>
+<html>
+<head>
+  <title>Foul Visualisation</title>
+  <script src="https://d3js.org/d3.v5.js"></script>
+</head>
+<body>
+  <script>
+    // Task: Visualise the data in the allData array created below
+    // Make a comparison by team of the fouls, yellowCards and redCards attributes
+    d3.csv("I1.csv").then(function(data){
+      // gets an array of the home team foul data
+      var homeData = data.map(function(d){
+        return{
+          team: d.HomeTeam,
+          fouls: +d.HF,
+          yellowCards: +d.HY,
+          redCards: +d.HR
+        }
+      });
+      // gets an array of the away team foul data
+      var awayData = data.map(function(d){
+        return{
+          team: d.AwayTeam,
+          fouls: +d.AF,
+          yellowCards: +d.AY,
+          redCards: +d.AR
+        }
+      });
+      // sorts the arrays in ascending order (a-z)
+      homeData.sort(function(a, b){
+        return d3.ascending(a.team, b.team);
+      });
+      awayData.sort(function(a, b){
+        return d3.ascending(a.team, b.team);
+      });
+      // initialises an array for storing summed home and away values
+      var mergedData = [];
+      // sums and filters all home data by team
+      homeData.reduce(function(res, value){
+        if(!res[value.team]){
+          res[value.team] = {
+            team: value.team,
+            fouls: 0,
+            yellowCards: 0,
+            redCards: 0
+          };
+          // adds the values to the array
+          mergedData.push(res[value.team])
+        }
+        // sums data for each team
+        res[value.team].fouls += value.fouls
+        res[value.team].yellowCards += value.yellowCards
+        res[value.team].redCards += value.redCards
+        return res;
+      }, {});
+      // sums and filters all away data by team
+      awayData.reduce(function(res, value){
+        if(!res[value.team]){
+          res[value.team] = {
+            team: value.team,
+            fouls: 0,
+            yellowCards: 0,
+            redCards: 0
+          };
+          // adds the values to the array
+          mergedData.push(res[value.team])
+        }
+        // sums data for each team
+        res[value.team].fouls += value.fouls
+        res[value.team].yellowCards += value.yellowCards
+        res[value.team].redCards += value.redCards
+        return res;
+      }, {});
+      // initialises an array for storing combined and summed team values
+      var allData = [];
+      // sums and filters all data by team
+      mergedData.reduce(function(res, value){
+        if(!res[value.team]){
+          res[value.team] = {
+            team: value.team,
+            fouls: 0,
+            yellowCards: 0,
+            redCards: 0
+          };
+          // adds the values to the array
+          allData.push(res[value.team])
+        }
+        res[value.team].fouls += value.fouls
+        res[value.team].yellowCards += value.yellowCards
+        res[value.team].redCards += value.redCards
+        return res;
+      }, {});
+      console.log(allData);
+    }).catch(console.log.bind(console));
+  </script>
+</body>
+</html>

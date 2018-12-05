@@ -1,0 +1,49 @@
+<!doctype html>
+<html>
+<head>
+  <title>Result Visualisation</title>
+  <script src="https://d3js.org/d3.v5.js"></script>
+</head>
+<body>
+  <script>
+    // Task: Visualise the data in the allData array created below
+    // Make a comparison by date of each game winner (and possibly who was leading at half time?)
+    // Could add more if statements to get a halfTimeLeader as well as winner? Up to you
+    d3.csv("I1.csv").then(function(data){
+      var allData = data.map(function(d){
+        if(d.FTR == "H"){
+          return{
+            date: d.Date,
+            homeTeam: d.HomeTeam,
+            awayTeam: d.AwayTeam,
+            halfResult: d.HTR,
+            fullResult: d.FTR,
+            winner: d.HomeTeam
+          }
+        }
+        if(d.FTR == "A"){
+          return{
+            date: d.Date,
+            homeTeam: d.HomeTeam,
+            awayTeam: d.AwayTeam,
+            halfResult: d.HTR,
+            fullResult: d.FTR,
+            winner: d.AwayTeam
+          }
+        }
+        if(d.FTR == "D"){
+          return{
+            date: d.Date,
+            homeTeam: d.HomeTeam,
+            awayTeam: d.AwayTeam,
+            halfResult: d.HTR,
+            fullResult: d.FTR,
+            winner: "Draw"
+          }
+        }
+      });
+      console.log(allData);
+    }).catch(console.log.bind(console));
+  </script>
+</body>
+</html>
