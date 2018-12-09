@@ -3,10 +3,21 @@
 <head>
   <title>Foul Visualisation</title>
   <script src="https://d3js.org/d3.v5.js"></script>
+  <style>
+    body { margin:0;position:fixed;top:0;right:0;bottom:0;left:0; }
+  </style>
 </head>
 <body>
   <script>
     // Task: Visualise the data in the allData array created below
+    var height = 500;
+    var width = 960;
+
+    var svg = d3.select("body").append("svg")
+    .attr("width", width)
+    .attr("height", height)
+
+
     // Make a comparison by team of the fouls, yellowCards and redCards attributes
     d3.csv("I1.csv").then(function(data){
       // gets an array of the home team foul data
@@ -92,7 +103,75 @@
         return res;
       }, {});
       console.log(allData);
+
+      //set the values for x
+      var xScale = d3.scaleLinear()
+      .domain([0,d3.max(
+        allData,
+        function(d){
+          return d.yellowCards;
+        }
+      )])
+      .range([100,900]);
+
+      //set the values for y
+      var yScale = d3.scaleLinear()
+      .domain ([0,d3.max(
+        allData,
+        function(d){
+          return d.redCards;
+        }
+      )])
+      .range([400,100]);
+
+      //set the values for r
+      var rScale = d3.scaleSqrt()
+      .domain([0,d3.max(
+        allData,
+        function(d){
+          return d.fouls;
+        }
+      )])
+      .range([0,50])
+
+      //set color scheme
+      var colorScale = d3.scaleOrdinal(
+        d3.schemeCategory10
+      );
+
+      //append the data to the svg elements
+      var svgElements = svg.selectAll("g")
+      .data(allData)
+      .enter()
+      .append("g");
+
+      //add circles and xy r attributes
+      svgElements
+      .append("circle")
+      .attr("cx", function(d) {return yScale(d.yellowCards);})
+      .attr("cy", function(d) {return xScale(d.redCards);})
+      .attr("r", function(d) {return rScale(d.fouls);})
+      .attr("opacity",0.8)
+      .attr("fill", function(d){
+        return colorScale(d.region);
+      })
+
+      //assign x and y axis
+      var leftAxis = d3.axisLeft(yScale);
+      var bottomAxis = d3.axisBottom(xScale);
+
+      //append g for y axis
+      svg.append("g")
+      .attr("transform", "translate(100,0)")
+      .call(leftAxis);
+
+      //append g for x axis
+      svg.append("g")
+      .attr("transform", "translate(0,400)")
+      .call(bottomAxis);
+
     }).catch(console.log.bind(console));
+
   </script>
 </body>
 </html>
