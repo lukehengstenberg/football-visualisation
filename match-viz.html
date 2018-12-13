@@ -2,7 +2,7 @@
 <html>
 <head>
   <title>Match Visualisation</title>
-  <script src="https://d3js.org/d3.v5.js"></script>
+  <script src="https://d3js.org/d3.v5.min.js"></script>
   <style>
     h1{
       position: absolute;
@@ -19,7 +19,7 @@
       border-radius: 15px;
       pointer-events: none;
     }
-    
+
   </style>
 </head>
 <body>
@@ -38,8 +38,6 @@
   var div = d3.select("body").append("div")
       .attr("class", "tooltip")
       .style("opacity", 0);
-
-  var clicked = false;
 
     d3.csv("I1.csv").then(function(data){
       var matchData = data.map(function(d){
